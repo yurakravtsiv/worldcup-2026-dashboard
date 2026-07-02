@@ -23,7 +23,7 @@ type StandingsErrorStateProps = {
 
 function StandingsErrorState({ onRetry, isRetrying }: StandingsErrorStateProps) {
   return (
-    <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4">
+    <div className="rounded-lg border border-destructive/40 bg-destructive/10 p-4" role="alert">
       <p className="text-sm font-medium text-destructive">Failed to load standings</p>
       <p className="mt-1 text-sm text-muted-foreground">
         Something went wrong while fetching group data. Please try again.

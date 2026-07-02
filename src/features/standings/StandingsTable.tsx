@@ -3,11 +3,13 @@ import { useMemo } from 'react'
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { activateOnEnterOrSpace, sortButtonClassName } from '@/lib/a11y'
 import { cn } from '@/lib/utils'
 import type { SortBy, SortDirection } from '@/store/dashboard-filters'
 import type { Standing } from '@/types/football'
@@ -54,6 +56,18 @@ function sortStandings(
   })
 }
 
+function getAriaSort(
+  column: SortBy,
+  sortBy: SortBy,
+  sortDirection: SortDirection,
+): 'ascending' | 'descending' | 'none' {
+  if (sortBy !== column) {
+    return 'none'
+  }
+
+  return sortDirection === 'asc' ? 'ascending' : 'descending'
+}
+
 function SortableHeader({
   column,
   label,
@@ -72,22 +86,75 @@ function SortableHeader({
   const isActive = sortBy === column
 
   return (
-    <TableHead className={className}>
+    <TableHead
+      scope="col"
+      aria-sort={getAriaSort(column, sortBy, sortDirection)}
+      className={className}
+    >
       <button
         type="button"
         onClick={() => onSortChange(column)}
-        className="inline-flex items-center gap-1 font-medium hover:text-foreground"
+        onKeyDown={(event) => activateOnEnterOrSpace(event, () => onSortChange(column))}
+        className={sortButtonClassName}
+        aria-label={`Sort by ${label}${isActive ? `, ${sortDirection === 'asc' ? 'ascending' : 'descending'}` : ''}`}
       >
         {label}
         {isActive ? (
           sortDirection === 'asc' ? (
-            <ArrowUpIcon className="size-3.5" />
+            <ArrowUpIcon className="size-3.5" aria-hidden="true" />
           ) : (
-            <ArrowDownIcon className="size-3.5" />
+            <ArrowDownIcon className="size-3.5" aria-hidden="true" />
           )
         ) : null}
       </button>
     </TableHead>
+  )
+}
+
+function goalDifferenceClassName(goalDifference: number): string {
+  return cn(goalDifference > 0 && 'text-stat-positive', goalDifference < 0 && 'text-stat-negative')
+}
+
+function formatGoalDifference(goalDifference: number): string {
+  return goalDifference > 0 ? `+${goalDifference}` : String(goalDifference)
+}
+
+function StandingsMobileCards({ standings }: { standings: Standing[] }) {
+  return (
+    <ul className="space-y-3 md:hidden" aria-label="Group standings">
+      {standings.map((standing, index) => (
+        <li
+          key={standing.teamName}
+          className="rounded-lg border border-border bg-card p-3 text-sm shadow-xs"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="font-medium">
+                <span className="mr-2 text-muted-foreground">{index + 1}.</span>
+                {standing.teamName}
+              </p>
+              <p className="mt-1 text-muted-foreground">
+                P {standing.played} · W {standing.won} · D {standing.drawn} · L {standing.lost}
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="font-semibold tabular-nums">{standing.points} pts</p>
+              <p
+                className={cn(
+                  'mt-1 tabular-nums',
+                  goalDifferenceClassName(standing.goalDifference),
+                )}
+              >
+                GD {formatGoalDifference(standing.goalDifference)}
+              </p>
+            </div>
+          </div>
+          <p className="mt-2 text-muted-foreground tabular-nums">
+            GF {standing.goalsFor} · GA {standing.goalsAgainst}
+          </p>
+        </li>
+      ))}
+    </ul>
   )
 }
 
@@ -109,67 +176,87 @@ export function StandingsTable({
   }
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-10">#</TableHead>
-          <SortableHeader
-            column="name"
-            label={columnLabels.name}
-            sortBy={sortBy}
-            sortDirection={sortDirection}
-            onSortChange={onSortChange}
-          />
-          <TableHead className="text-right">{columnLabels.played}</TableHead>
-          <TableHead className="text-right">W</TableHead>
-          <TableHead className="text-right">D</TableHead>
-          <TableHead className="text-right">L</TableHead>
-          <TableHead className="text-right">GF</TableHead>
-          <TableHead className="text-right">GA</TableHead>
-          <SortableHeader
-            column="goalDiff"
-            label={columnLabels.goalDiff}
-            sortBy={sortBy}
-            sortDirection={sortDirection}
-            onSortChange={onSortChange}
-            className="text-right"
-          />
-          <SortableHeader
-            column="points"
-            label={columnLabels.points}
-            sortBy={sortBy}
-            sortDirection={sortDirection}
-            onSortChange={onSortChange}
-            className="text-right"
-          />
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {sortedStandings.map((standing, index) => (
-          <TableRow key={standing.teamName}>
-            <TableCell className="text-muted-foreground">{index + 1}</TableCell>
-            <TableCell className="font-medium">{standing.teamName}</TableCell>
-            <TableCell className="text-right">{standing.played}</TableCell>
-            <TableCell className="text-right">{standing.won}</TableCell>
-            <TableCell className="text-right">{standing.drawn}</TableCell>
-            <TableCell className="text-right">{standing.lost}</TableCell>
-            <TableCell className="text-right">{standing.goalsFor}</TableCell>
-            <TableCell className="text-right">{standing.goalsAgainst}</TableCell>
-            <TableCell
-              className={cn(
-                'text-right',
-                standing.goalDifference > 0 && 'text-emerald-600 dark:text-emerald-400',
-                standing.goalDifference < 0 && 'text-red-600 dark:text-red-400',
-              )}
-            >
-              {standing.goalDifference > 0
-                ? `+${standing.goalDifference}`
-                : standing.goalDifference}
-            </TableCell>
-            <TableCell className="text-right font-semibold">{standing.points}</TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <>
+      <StandingsMobileCards standings={sortedStandings} />
+
+      <div className="hidden md:block">
+        <Table className="min-w-[640px]">
+          <TableCaption className="sr-only">Group standings table</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead scope="col" className="w-10">
+                #
+              </TableHead>
+              <SortableHeader
+                column="name"
+                label={columnLabels.name}
+                sortBy={sortBy}
+                sortDirection={sortDirection}
+                onSortChange={onSortChange}
+              />
+              <TableHead scope="col" className="text-right">
+                {columnLabels.played}
+              </TableHead>
+              <TableHead scope="col" className="text-right">
+                W
+              </TableHead>
+              <TableHead scope="col" className="text-right">
+                D
+              </TableHead>
+              <TableHead scope="col" className="text-right">
+                L
+              </TableHead>
+              <TableHead scope="col" className="text-right">
+                GF
+              </TableHead>
+              <TableHead scope="col" className="text-right">
+                GA
+              </TableHead>
+              <SortableHeader
+                column="goalDiff"
+                label={columnLabels.goalDiff}
+                sortBy={sortBy}
+                sortDirection={sortDirection}
+                onSortChange={onSortChange}
+                className="text-right"
+              />
+              <SortableHeader
+                column="points"
+                label={columnLabels.points}
+                sortBy={sortBy}
+                sortDirection={sortDirection}
+                onSortChange={onSortChange}
+                className="text-right"
+              />
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {sortedStandings.map((standing, index) => (
+              <TableRow key={standing.teamName}>
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
+                <TableCell className="font-medium">{standing.teamName}</TableCell>
+                <TableCell className="text-right tabular-nums">{standing.played}</TableCell>
+                <TableCell className="text-right tabular-nums">{standing.won}</TableCell>
+                <TableCell className="text-right tabular-nums">{standing.drawn}</TableCell>
+                <TableCell className="text-right tabular-nums">{standing.lost}</TableCell>
+                <TableCell className="text-right tabular-nums">{standing.goalsFor}</TableCell>
+                <TableCell className="text-right tabular-nums">{standing.goalsAgainst}</TableCell>
+                <TableCell
+                  className={cn(
+                    'text-right tabular-nums',
+                    goalDifferenceClassName(standing.goalDifference),
+                  )}
+                >
+                  {formatGoalDifference(standing.goalDifference)}
+                </TableCell>
+                <TableCell className="text-right font-semibold tabular-nums">
+                  {standing.points}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </>
   )
 }

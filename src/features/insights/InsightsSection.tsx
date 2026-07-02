@@ -24,7 +24,7 @@ type InsightsErrorStateProps = {
 
 function InsightsErrorState({ onRetry, isRetrying }: InsightsErrorStateProps) {
   return (
-    <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4">
+    <div className="rounded-lg border border-destructive/40 bg-destructive/10 p-4" role="alert">
       <p className="text-sm font-medium text-destructive">Failed to load tournament insights</p>
       <p className="mt-1 text-sm text-muted-foreground">
         Something went wrong while fetching tournament data. Please try again.

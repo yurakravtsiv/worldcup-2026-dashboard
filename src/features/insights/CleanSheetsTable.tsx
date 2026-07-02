@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -27,24 +28,48 @@ export function CleanSheetsTable({ cleanSheets, limit = 10 }: CleanSheetsTablePr
         {rows.length === 0 ? (
           <p className="text-sm text-muted-foreground">No clean sheets recorded yet.</p>
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-10">#</TableHead>
-                <TableHead>Team</TableHead>
-                <TableHead className="text-right">Clean sheets</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+          <>
+            <ul className="space-y-2 sm:hidden" aria-label="Clean sheets ranking">
               {rows.map((entry, index) => (
-                <TableRow key={entry.teamName}>
-                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
-                  <TableCell className="font-medium">{entry.teamName}</TableCell>
-                  <TableCell className="text-right tabular-nums">{entry.cleanSheets}</TableCell>
-                </TableRow>
+                <li
+                  key={entry.teamName}
+                  className="flex items-center justify-between rounded-md border border-border px-3 py-2 text-sm"
+                >
+                  <span>
+                    <span className="mr-2 text-muted-foreground">{index + 1}.</span>
+                    <span className="font-medium">{entry.teamName}</span>
+                  </span>
+                  <span className="font-semibold tabular-nums">{entry.cleanSheets}</span>
+                </li>
               ))}
-            </TableBody>
-          </Table>
+            </ul>
+
+            <div className="hidden sm:block">
+              <Table className="min-w-[20rem]">
+                <TableCaption className="sr-only">Clean sheets ranking</TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead scope="col" className="w-10">
+                      #
+                    </TableHead>
+                    <TableHead scope="col">Team</TableHead>
+                    <TableHead scope="col" className="text-right">
+                      Clean sheets
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {rows.map((entry, index) => (
+                    <TableRow key={entry.teamName}>
+                      <TableCell className="text-muted-foreground">{index + 1}</TableCell>
+                      <TableCell className="font-medium">{entry.teamName}</TableCell>
+                      <TableCell className="text-right tabular-nums">{entry.cleanSheets}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </>
         )}
       </CardContent>
     </Card>

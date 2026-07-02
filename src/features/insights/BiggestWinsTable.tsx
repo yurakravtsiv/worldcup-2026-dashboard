@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -27,28 +28,59 @@ export function BiggestWinsTable({ biggestWins, limit = 10 }: BiggestWinsTablePr
         {rows.length === 0 ? (
           <p className="text-sm text-muted-foreground">No decisive wins recorded yet.</p>
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-10">#</TableHead>
-                <TableHead>Winner</TableHead>
-                <TableHead>Loser</TableHead>
-                <TableHead className="text-right">Margin</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+          <>
+            <ul className="space-y-2 md:hidden" aria-label="Biggest wins ranking">
               {rows.map((entry, index) => (
-                <TableRow key={`${entry.match.date}-${entry.winner}-${entry.loser}`}>
-                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
-                  <TableCell className="font-medium">{entry.winner}</TableCell>
-                  <TableCell>{entry.loser}</TableCell>
-                  <TableCell className="text-right font-semibold tabular-nums">
-                    +{entry.margin}
-                  </TableCell>
-                </TableRow>
+                <li
+                  key={`${entry.match.date}-${entry.winner}-${entry.loser}`}
+                  className="rounded-md border border-border px-3 py-2 text-sm"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="font-medium">
+                        <span className="mr-2 text-muted-foreground">{index + 1}.</span>
+                        {entry.winner}
+                      </p>
+                      <p className="mt-1 truncate text-muted-foreground">vs {entry.loser}</p>
+                    </div>
+                    <span className="shrink-0 font-semibold tabular-nums text-stat-positive">
+                      +{entry.margin}
+                    </span>
+                  </div>
+                </li>
               ))}
-            </TableBody>
-          </Table>
+            </ul>
+
+            <div className="hidden md:block">
+              <Table className="min-w-[28rem]">
+                <TableCaption className="sr-only">Biggest wins ranking</TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead scope="col" className="w-10">
+                      #
+                    </TableHead>
+                    <TableHead scope="col">Winner</TableHead>
+                    <TableHead scope="col">Loser</TableHead>
+                    <TableHead scope="col" className="text-right">
+                      Margin
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {rows.map((entry, index) => (
+                    <TableRow key={`${entry.match.date}-${entry.winner}-${entry.loser}`}>
+                      <TableCell className="text-muted-foreground">{index + 1}</TableCell>
+                      <TableCell className="font-medium">{entry.winner}</TableCell>
+                      <TableCell>{entry.loser}</TableCell>
+                      <TableCell className="text-right font-semibold tabular-nums text-stat-positive">
+                        +{entry.margin}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </>
         )}
       </CardContent>
     </Card>

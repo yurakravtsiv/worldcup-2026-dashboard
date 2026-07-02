@@ -18,7 +18,7 @@ export function UpsetIndexCard({ upsets }: UpsetIndexCardProps) {
         {topUpsets.length === 0 ? (
           <p className="text-sm text-muted-foreground">No upsets recorded yet.</p>
         ) : (
-          <ol className="space-y-3">
+          <ol className="space-y-3" aria-label="Top 5 upsets by ranking gap">
             {topUpsets.map((upset, index) => (
               <li key={`${upset.match.date}-${upset.winner}-${upset.loser}`} className="text-sm">
                 <span className="mr-2 font-medium text-muted-foreground">{index + 1}.</span>
