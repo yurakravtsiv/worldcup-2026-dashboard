@@ -1,14 +1,5 @@
-import { NavLink, Outlet } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 import { ThemeToggle } from '@/components/theme-toggle'
-import { cn } from '@/lib/utils'
-
-const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-  cn(
-    'rounded-md px-3 py-2 text-sm font-medium transition-colors',
-    isActive
-      ? 'bg-accent text-accent-foreground'
-      : 'text-muted-foreground hover:bg-muted hover:text-foreground',
-  )
 
 export function AppLayout() {
   return (
@@ -22,14 +13,6 @@ export function AppLayout() {
           <ThemeToggle />
         </div>
       </header>
-
-      <nav className="border-b border-border">
-        <div className="mx-auto flex max-w-5xl gap-1 px-4 py-2">
-          <NavLink to="/" end className={navLinkClass}>
-            Dashboard
-          </NavLink>
-        </div>
-      </nav>
 
       <main className="mx-auto max-w-5xl px-4 py-8">
         <Outlet />

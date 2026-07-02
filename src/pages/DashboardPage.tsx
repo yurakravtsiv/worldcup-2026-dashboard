@@ -1,27 +1,26 @@
 import { useState } from 'react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { InsightsSection } from '@/features/insights/InsightsSection'
-import { StandingsSection } from '@/features/standings/StandingsSection'
 
-type DashboardTab = 'overview' | 'insights'
+type DashboardTab = 'table' | 'insights'
 
 const tabs: { value: DashboardTab; label: string; panelId: string; tabId: string }[] = [
   {
-    value: 'overview',
-    label: 'Огляд',
-    panelId: 'dashboard-panel-overview',
-    tabId: 'dashboard-tab-overview',
+    value: 'table',
+    label: 'Table',
+    panelId: 'dashboard-panel-table',
+    tabId: 'dashboard-tab-table',
   },
   {
     value: 'insights',
-    label: 'Інсайти',
+    label: 'Insights',
     panelId: 'dashboard-panel-insights',
     tabId: 'dashboard-tab-insights',
   },
 ]
 
 export function DashboardPage() {
-  const [activeTab, setActiveTab] = useState<DashboardTab>('overview')
+  const [activeTab, setActiveTab] = useState<DashboardTab>('table')
 
   return (
     <div className="space-y-6">
@@ -43,7 +42,7 @@ export function DashboardPage() {
           aria-labelledby={tab.tabId}
           hidden={activeTab !== tab.value}
         >
-          {tab.value === 'overview' ? <StandingsSection /> : <InsightsSection />}
+          {tab.value === 'insights' ? <InsightsSection /> : null}
         </div>
       ))}
     </div>
