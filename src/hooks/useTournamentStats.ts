@@ -63,6 +63,10 @@ export function useTournamentStats() {
     cleanSheetsAndWins,
     goalsTimeline,
     isLoading: groupsQuery.isLoading || matchesQuery.isLoading || rankingsQuery.isLoading,
+    isFetching: groupsQuery.isFetching || matchesQuery.isFetching || rankingsQuery.isFetching,
     isError: groupsQuery.isError || matchesQuery.isError || rankingsQuery.isError,
+    refetch: async () => {
+      await Promise.all([groupsQuery.refetch(), matchesQuery.refetch(), rankingsQuery.refetch()])
+    },
   }
 }
