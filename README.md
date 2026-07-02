@@ -107,6 +107,36 @@ Separation of concerns: **fetch/cache** (Query) → **transform** (`lib/`) → *
 | Charts | recharts |
 | Tests | Vitest + Testing Library |
 
+## Win Probability & Tournament Stage Snapshots
+
+### What "Win Probability" actually means
+
+It's an **independent heuristic strength score per team (0-100%)**, not a normalized probability distribution. Multiple teams can have high scores simultaneously (e.g. Argentina 85% and France 84% at the same time) — the numbers don't sum to 100 across teams. It's computed as a weighted composite of:
+
+- **FIFA ranking (35%)** — pre-tournament team strength
+- **Current form (25%)** — points per game so far in the tournament
+- **Attack output (15%)** — goals scored, relative to other teams still in the tournament
+- **Defense output (15%)** — goals conceded, relative to other teams still in the tournament
+- **Upset bonus (10%)** — extra credit for beating higher-ranked opponents
+
+Eliminated teams always show 0%.
+
+### Tournament stage snapshots
+
+A "Stage" dropdown lets you see what the ranking looked like at any past point — Group Stage Round 1/2/3, or any completed knockout round. Selecting a stage recalculates every team's score using only the matches known up to that point.
+
+Two design decisions worth calling out:
+
+1. **Group rounds are per-team, not per-calendar-day.** The World Cup's 12 groups don't play synchronized rounds — group matches are spread across many calendar days. "Group Round 2" means each team's first 2 matches (chronologically), not "everything that happened by some fixed date."
+
+2. **Frozen scores for teams without a new match.** If a team hasn't played yet at the selected stage (e.g. their Round of 16 match hasn't kicked off), their score is carried over unchanged from the previous stage, instead of being recalculated against a different pool of "still active" teams. Without this, a team's % could shift just because other teams played matches — even though nothing changed for that team itself.
+
+3. **No elimination during group stage.** Before the knockout bracket exists, no team is marked as eliminated — elimination only starts applying from Round of 32 onward, based on actual results.
+
+### Known limitations
+
+This is a deliberately simple, explainable heuristic — not a statistical model (no Elo, no Monte Carlo simulation, no historical base rates). The weights (35/25/15/15/10) are a reasonable starting point I could tune with real data, not derived from any formal fitting process.
+
 ## What I would improve with more time
 
 - **WebSocket / SSE** — live score updates during matches instead of a static snapshot.

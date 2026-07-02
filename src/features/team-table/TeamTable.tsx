@@ -152,7 +152,7 @@ function StaticHeader({ column }: { column: StaticColumn }) {
 export function TeamTable({ rows, sortBy, sortDirection, onSortChange }: TeamTableProps) {
   return (
     <Table className="min-w-[56rem]">
-      <TableCaption className="sr-only">Tournament team statistics table</TableCaption>
+      <TableCaption className="sr-only">Power rankings table</TableCaption>
       <TableHeader>
         <TableRow>
           {columns.map((column) =>

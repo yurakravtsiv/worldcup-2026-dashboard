@@ -35,7 +35,7 @@ type TeamTableErrorStateProps = {
 function TeamTableErrorState({ onRetry, isRetrying }: TeamTableErrorStateProps) {
   return (
     <div className="rounded-lg border border-destructive/40 bg-destructive/10 p-4" role="alert">
-      <p className="text-sm font-medium text-destructive">Failed to load team table</p>
+      <p className="text-sm font-medium text-destructive">Failed to load power rankings</p>
       <p className="mt-1 text-sm text-muted-foreground">
         Something went wrong while fetching tournament data. Please try again.
       </p>
@@ -158,9 +158,9 @@ export function TeamTableSection() {
   return (
     <section className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold tracking-tight">Team table</h2>
+        <h2 className="text-lg font-semibold tracking-tight">Power Rankings</h2>
         <p className="text-sm text-muted-foreground">
-          Group-stage stats and heuristic strength scores by tournament stage.
+          Team strength rankings and stats, snapshot by tournament stage.
         </p>
       </div>
 

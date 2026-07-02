@@ -8,7 +8,7 @@ type DashboardTab = 'table' | 'insights'
 const tabs: { value: DashboardTab; label: string; panelId: string; tabId: string }[] = [
   {
     value: 'table',
-    label: 'Table',
+    label: 'Power Rankings',
     panelId: 'dashboard-panel-table',
     tabId: 'dashboard-tab-table',
   },
