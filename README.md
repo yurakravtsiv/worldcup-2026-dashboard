@@ -121,6 +121,6 @@ Separation of concerns: **fetch/cache** (Query) → **transform** (`lib/`) → *
 - **FIFA rankings** in `fifa-rankings.json` are approximate demo values for the upset index, not official live FIFA rankings.
 - **No real backend** — MSW in dev only; the production build does not serve `/api/*` without deploying an API.
 - **Static snapshot** — matches without `score` are treated as upcoming; there is no automatic sync from an external source.
-- **Upset index** — depends on ranking quality; with `rankingGap = loserRanking - winnerRanking`, the metric favors matches where the winner has a *better* (lower) ranking number — upset semantics are limited by demo data.
+- **Upset index** — depends on ranking quality; only includes matches where the lower-ranked team (higher FIFA number) beat a higher-ranked opponent. `rankingGap` is the positive difference in ranking positions (demo data only).
 - **Group detail page** (`/groups/:groupName`) is a minimal placeholder; main functionality lives on the Dashboard.
 - **Penalties / extra time** — group standings use `ft` only; knockout logic is partially reflected in stats (penalties for determining the winner).

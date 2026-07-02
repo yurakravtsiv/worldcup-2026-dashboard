@@ -1,5 +1,5 @@
 import { computeStandings, isPlayedMatch } from '@/lib/standings'
-import type { Group, Match, TeamRanking } from '@/types/football'
+import type { Group, Match, MatchScore, ScoreTuple, TeamRanking } from '@/types/football'
 import type {
   CleanSheetsAndBiggestWinsResult,
   GoalsTimelineEntry,
@@ -14,30 +14,37 @@ type MatchWinner = {
   loser: string
 }
 
+function getScoreLine(match: Match & { score: MatchScore }): ScoreTuple | null {
+  const { score } = match
+
+  if (score.p) {
+    return score.p
+  }
+
+  if (score.et) {
+    return score.et
+  }
+
+  return score.ft
+}
+
 function getMatchWinner(match: Match): MatchWinner | null {
   if (!isPlayedMatch(match)) {
     return null
   }
 
-  const { score, team1, team2 } = match
+  const { team1, team2 } = match
+  const line = getScoreLine(match)
 
-  if (score.p) {
-    if (score.p[0] > score.p[1]) {
-      return { winner: team1, loser: team2 }
-    }
-
-    if (score.p[1] > score.p[0]) {
-      return { winner: team2, loser: team1 }
-    }
-
+  if (!line) {
     return null
   }
 
-  if (score.ft[0] > score.ft[1]) {
+  if (line[0] > line[1]) {
     return { winner: team1, loser: team2 }
   }
 
-  if (score.ft[1] > score.ft[0]) {
+  if (line[1] > line[0]) {
     return { winner: team2, loser: team1 }
   }
 
@@ -65,10 +72,12 @@ export function computeUpsetIndex(matches: Match[], rankings: TeamRanking[]): Up
       continue
     }
 
-    const rankingGap = loserRanking - winnerRanking
-    if (rankingGap <= 0) {
+    // Upset: winner is lower-ranked (higher FIFA ranking number) than the loser.
+    if (winnerRanking <= loserRanking) {
       continue
     }
+
+    const rankingGap = winnerRanking - loserRanking
 
     upsets.push({
       match,

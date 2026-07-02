@@ -20,21 +20,21 @@ const rankings: TeamRanking[] = [
 ]
 
 describe('computeUpsetIndex', () => {
-  it('returns results sorted by ranking gap using loserRanking - winnerRanking', () => {
+  it('returns upsets sorted by ranking gap descending', () => {
     const matches: Match[] = [
       {
         ...baseMatch,
         date: '2026-06-11',
-        team1: 'Favorite',
-        team2: 'Underdog',
-        score: { ft: [2, 0] },
+        team1: 'Mid',
+        team2: 'Guest',
+        score: { ft: [1, 2] },
       },
       {
         ...baseMatch,
         date: '2026-06-12',
-        team1: 'Mid',
-        team2: 'Guest',
-        score: { ft: [2, 1] },
+        team1: 'Favorite',
+        team2: 'Underdog',
+        score: { ft: [0, 1] },
       },
     ]
 
@@ -42,17 +42,29 @@ describe('computeUpsetIndex', () => {
 
     expect(upsets).toHaveLength(2)
     expect(upsets[0]).toMatchObject({
-      winner: 'Favorite',
-      loser: 'Underdog',
-      winnerRanking: 1,
-      loserRanking: 20,
+      winner: 'Underdog',
+      loser: 'Favorite',
       rankingGap: 19,
     })
     expect(upsets[1]).toMatchObject({
-      winner: 'Mid',
-      loser: 'Guest',
+      winner: 'Guest',
+      loser: 'Mid',
       rankingGap: 5,
     })
+  })
+
+  it('excludes matches where the favorite beat the underdog', () => {
+    const matches: Match[] = [
+      {
+        ...baseMatch,
+        date: '2026-06-11',
+        team1: 'Favorite',
+        team2: 'Underdog',
+        score: { ft: [4, 0] },
+      },
+    ]
+
+    expect(computeUpsetIndex(matches, rankings)).toEqual([])
   })
 
   it('ignores draws and uses penalties to determine the winner', () => {
@@ -62,7 +74,7 @@ describe('computeUpsetIndex', () => {
         date: '2026-06-11',
         team1: 'Favorite',
         team2: 'Underdog',
-        score: { ft: [1, 1], p: [5, 4] },
+        score: { ft: [1, 1], p: [4, 5] },
       },
       {
         ...baseMatch,
@@ -77,8 +89,29 @@ describe('computeUpsetIndex', () => {
 
     expect(upsets).toHaveLength(1)
     expect(upsets[0]).toMatchObject({
-      winner: 'Favorite',
-      loser: 'Underdog',
+      winner: 'Underdog',
+      loser: 'Favorite',
+      rankingGap: 19,
+    })
+  })
+
+  it('uses extra time score when penalties are absent', () => {
+    const matches: Match[] = [
+      {
+        ...baseMatch,
+        date: '2026-06-11',
+        team1: 'Favorite',
+        team2: 'Underdog',
+        score: { ft: [1, 1], et: [1, 2] },
+      },
+    ]
+
+    const upsets = computeUpsetIndex(matches, rankings)
+
+    expect(upsets).toHaveLength(1)
+    expect(upsets[0]).toMatchObject({
+      winner: 'Underdog',
+      loser: 'Favorite',
       rankingGap: 19,
     })
   })

@@ -6,7 +6,7 @@ export type UpsetResult = {
   loser: string
   winnerRanking: number
   loserRanking: number
-  /** Positive when the lower-ranked team (higher FIFA number) beat the higher-ranked team. */
+  /** Positive when the lower-ranked team (higher FIFA number) beat the higher-ranked team. Equals winnerRanking - loserRanking. */
   rankingGap: number
 }
 
