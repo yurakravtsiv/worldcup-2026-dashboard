@@ -26,6 +26,13 @@ export function useGroupStandings(groupName: string | null) {
   return {
     standings,
     isLoading: groupsQuery.isLoading || matchesQuery.isLoading,
+    isFetching: groupsQuery.isFetching || matchesQuery.isFetching,
     isError: groupsQuery.isError || matchesQuery.isError,
+    refetch: async () => {
+      await Promise.all([
+        groupsQuery.refetch(),
+        groupName ? matchesQuery.refetch() : Promise.resolve(),
+      ])
+    },
   }
 }
