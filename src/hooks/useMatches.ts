@@ -1,20 +1,15 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, type UseQueryOptions } from '@tanstack/react-query'
 import { apiClient, buildQueryString } from '@/lib/api-client'
-import type { Match, TeamRanking, TournamentGroups } from '@/types/football'
-
-export function useGroups() {
-  return useQuery({
-    queryKey: ['groups'],
-    queryFn: () => apiClient<TournamentGroups>('/groups'),
-  })
-}
+import type { Match } from '@/types/football'
 
 export type MatchFilters = {
   group?: string
   round?: string
 }
 
-export function useMatches(filters?: MatchFilters) {
+type UseMatchesOptions = Pick<UseQueryOptions<Match[]>, 'enabled'>
+
+export function useMatches(filters?: MatchFilters, options?: UseMatchesOptions) {
   return useQuery({
     queryKey: ['matches', filters],
     queryFn: () =>
@@ -24,12 +19,6 @@ export function useMatches(filters?: MatchFilters) {
           round: filters?.round,
         })}`,
       ),
-  })
-}
-
-export function useRankings() {
-  return useQuery({
-    queryKey: ['rankings'],
-    queryFn: () => apiClient<TeamRanking[]>('/rankings'),
+    enabled: options?.enabled ?? true,
   })
 }
