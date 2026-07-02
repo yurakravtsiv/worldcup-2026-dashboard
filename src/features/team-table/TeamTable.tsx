@@ -1,4 +1,5 @@
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react'
+import { TeamFlag } from '@/components/team-flag'
 import {
   Table,
   TableBody,
@@ -180,7 +181,12 @@ export function TeamTable({ rows, sortBy, sortDirection, onSortChange }: TeamTab
         ) : (
           rows.map((row) => (
             <TableRow key={row.teamName} className={cn(row.isEliminated && 'opacity-50')}>
-              <TableCell className="font-medium">{row.teamName}</TableCell>
+              <TableCell className="font-medium">
+                <span className="inline-flex items-center gap-2">
+                  <TeamFlag teamName={row.teamName} />
+                  {row.teamName}
+                </span>
+              </TableCell>
               <TableCell className="text-right tabular-nums">{formatWinProbability(row)}</TableCell>
               <TableCell className="text-right tabular-nums">{row.played}</TableCell>
               <TableCell className="text-right tabular-nums">{row.won}</TableCell>

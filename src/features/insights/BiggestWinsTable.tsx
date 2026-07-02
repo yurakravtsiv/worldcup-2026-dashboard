@@ -1,3 +1,4 @@
+import { TeamFlag } from '@/components/team-flag'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Table,
@@ -37,11 +38,16 @@ export function BiggestWinsTable({ biggestWins, limit = 10 }: BiggestWinsTablePr
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="font-medium">
-                        <span className="mr-2 text-muted-foreground">{index + 1}.</span>
+                      <p className="inline-flex items-center gap-2 font-medium">
+                        <span className="text-muted-foreground">{index + 1}.</span>
+                        <TeamFlag teamName={entry.winner} />
                         {entry.winner}
                       </p>
-                      <p className="mt-1 truncate text-muted-foreground">vs {entry.loser}</p>
+                      <p className="mt-1 inline-flex min-w-0 items-center gap-2 truncate text-muted-foreground">
+                        <span>vs</span>
+                        <TeamFlag teamName={entry.loser} />
+                        {entry.loser}
+                      </p>
                     </div>
                     <span className="shrink-0 font-semibold tabular-nums text-stat-positive">
                       +{entry.margin}
@@ -70,8 +76,18 @@ export function BiggestWinsTable({ biggestWins, limit = 10 }: BiggestWinsTablePr
                   {rows.map((entry, index) => (
                     <TableRow key={`${entry.match.date}-${entry.winner}-${entry.loser}`}>
                       <TableCell className="text-muted-foreground">{index + 1}</TableCell>
-                      <TableCell className="font-medium">{entry.winner}</TableCell>
-                      <TableCell>{entry.loser}</TableCell>
+                      <TableCell className="font-medium">
+                        <span className="inline-flex items-center gap-2">
+                          <TeamFlag teamName={entry.winner} />
+                          {entry.winner}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <span className="inline-flex items-center gap-2">
+                          <TeamFlag teamName={entry.loser} />
+                          {entry.loser}
+                        </span>
+                      </TableCell>
                       <TableCell className="text-right font-semibold tabular-nums text-stat-positive">
                         +{entry.margin}
                       </TableCell>

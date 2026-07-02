@@ -1,3 +1,4 @@
+import { TeamFlag } from '@/components/team-flag'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Table,
@@ -35,9 +36,12 @@ export function CleanSheetsTable({ cleanSheets, limit = 10 }: CleanSheetsTablePr
                   key={entry.teamName}
                   className="flex items-center justify-between rounded-md border border-border px-3 py-2 text-sm"
                 >
-                  <span>
-                    <span className="mr-2 text-muted-foreground">{index + 1}.</span>
-                    <span className="font-medium">{entry.teamName}</span>
+                  <span className="inline-flex min-w-0 items-center gap-2">
+                    <span className="text-muted-foreground">{index + 1}.</span>
+                    <span className="inline-flex items-center gap-2 font-medium">
+                      <TeamFlag teamName={entry.teamName} />
+                      {entry.teamName}
+                    </span>
                   </span>
                   <span className="font-semibold tabular-nums">{entry.cleanSheets}</span>
                 </li>
@@ -62,7 +66,12 @@ export function CleanSheetsTable({ cleanSheets, limit = 10 }: CleanSheetsTablePr
                   {rows.map((entry, index) => (
                     <TableRow key={entry.teamName}>
                       <TableCell className="text-muted-foreground">{index + 1}</TableCell>
-                      <TableCell className="font-medium">{entry.teamName}</TableCell>
+                      <TableCell className="font-medium">
+                        <span className="inline-flex items-center gap-2">
+                          <TeamFlag teamName={entry.teamName} />
+                          {entry.teamName}
+                        </span>
+                      </TableCell>
                       <TableCell className="text-right tabular-nums">{entry.cleanSheets}</TableCell>
                     </TableRow>
                   ))}
