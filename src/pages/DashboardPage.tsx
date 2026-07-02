@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { InsightsSection } from '@/features/insights/InsightsSection'
+import { TeamTableSection } from '@/features/team-table/TeamTableSection'
 
 type DashboardTab = 'table' | 'insights'
 
@@ -42,7 +43,7 @@ export function DashboardPage() {
           aria-labelledby={tab.tabId}
           hidden={activeTab !== tab.value}
         >
-          {tab.value === 'insights' ? <InsightsSection /> : null}
+          {tab.value === 'insights' ? <InsightsSection /> : <TeamTableSection />}
         </div>
       ))}
     </div>

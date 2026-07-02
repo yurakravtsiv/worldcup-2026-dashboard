@@ -35,31 +35,20 @@ function createEmptyStats(): MutableTeamStats {
   }
 }
 
-function applyResult(
+function applyMatchToTeam(
   stats: MutableTeamStats,
   goalsFor: number,
   goalsAgainst: number,
+  result: 'won' | 'drawn' | 'lost',
 ): MutableTeamStats {
-  const next = {
-    ...stats,
+  return {
     played: stats.played + 1,
     goalsFor: stats.goalsFor + goalsFor,
     goalsAgainst: stats.goalsAgainst + goalsAgainst,
+    won: stats.won + (result === 'won' ? 1 : 0),
+    drawn: stats.drawn + (result === 'drawn' ? 1 : 0),
+    lost: stats.lost + (result === 'lost' ? 1 : 0),
   }
-
-  if (goalsFor > goalsAgainst) {
-    return { ...next, won: stats.won + 1 }
-  }
-
-  if (goalsFor < goalsAgainst) {
-    return { ...next, lost: stats.lost + 1 }
-  }
-
-  return { ...next, drawn: stats.drawn + 1 }
-}
-
-function isGroupStageMatch(match: Match): boolean {
-  return match.round.startsWith('Matchday')
 }
 
 function isKnockoutRound(round: string): round is (typeof KNOCKOUT_STAGE_ORDER)[number] {
@@ -99,6 +88,22 @@ function getMatchWinner(match: Match): MatchOutcome | null {
   return null
 }
 
+function getTeamResults(
+  match: Match & { score: MatchScore },
+): { team1: 'won' | 'drawn' | 'lost'; team2: 'won' | 'drawn' | 'lost' } {
+  const outcome = getMatchWinner(match)
+
+  if (!outcome) {
+    return { team1: 'drawn', team2: 'drawn' }
+  }
+
+  if (outcome.winner === match.team1) {
+    return { team1: 'won', team2: 'lost' }
+  }
+
+  return { team1: 'lost', team2: 'won' }
+}
+
 function buildRankingMap(rankings: TeamRanking[]): Map<string, number> {
   return new Map(rankings.map(({ teamName, ranking }) => [teamName, ranking]))
 }
@@ -119,14 +124,14 @@ function hasNewMatchForTeam(
   )
 }
 
-export function computeAllTeamsGroupStats(matches: Match[], allTeams: string[]): TeamGroupStats[] {
+export function computeAllTeamsStats(matches: Match[], allTeams: string[]): TeamGroupStats[] {
   const allTeamSet = new Set(allTeams)
   const statsByTeam = new Map<string, MutableTeamStats>(
     allTeams.map((teamName) => [teamName, createEmptyStats()]),
   )
 
   for (const match of matches) {
-    if (!isPlayedMatch(match) || !isGroupStageMatch(match)) {
+    if (!isPlayedMatch(match)) {
       continue
     }
 
@@ -142,8 +147,16 @@ export function computeAllTeamsGroupStats(matches: Match[], allTeams: string[]):
       continue
     }
 
-    statsByTeam.set(match.team1, applyResult(team1Stats, team1Goals, team2Goals))
-    statsByTeam.set(match.team2, applyResult(team2Stats, team2Goals, team1Goals))
+    const results = getTeamResults(match)
+
+    statsByTeam.set(
+      match.team1,
+      applyMatchToTeam(team1Stats, team1Goals, team2Goals, results.team1),
+    )
+    statsByTeam.set(
+      match.team2,
+      applyMatchToTeam(team2Stats, team2Goals, team1Goals, results.team2),
+    )
   }
 
   return allTeams.map((teamName) => {
@@ -207,12 +220,33 @@ export function getEliminatedTeamsForStage(
   stageId: StageId,
   stageMatches: Match[],
   allTeams: string[],
+  fullMatches: Match[],
 ): Set<string> {
   if (isGroupStage(stageId)) {
     return new Set<string>()
   }
 
-  return getEliminatedTeams(stageMatches, allTeams)
+  const qualifiedTeams = getQualifiedTeams(fullMatches)
+  const eliminatedTeams = new Set<string>()
+
+  for (const teamName of allTeams) {
+    if (!qualifiedTeams.has(teamName)) {
+      eliminatedTeams.add(teamName)
+    }
+  }
+
+  for (const match of stageMatches) {
+    if (!isKnockoutRound(match.round) || !isPlayedMatch(match)) {
+      continue
+    }
+
+    const outcome = getMatchWinner(match)
+    if (outcome) {
+      eliminatedTeams.add(outcome.loser)
+    }
+  }
+
+  return eliminatedTeams
 }
 
 export function computeUpsetBonus(
@@ -263,10 +297,10 @@ export function computeTournamentWinProbability(
   allTeams: string[],
 ): TeamProbability[] {
   const stageMatches = getMatchesForStage(stageId, matches)
-  const eliminated = getEliminatedTeamsForStage(stageId, stageMatches, allTeams)
-  const groupStats = computeAllTeamsGroupStats(stageMatches, allTeams)
+  const eliminated = getEliminatedTeamsForStage(stageId, stageMatches, allTeams, matches)
+  const teamStats = computeAllTeamsStats(stageMatches, allTeams)
   const rankingByTeam = buildRankingMap(rankings)
-  const statsByTeam = new Map(groupStats.map((stats) => [stats.teamName, stats]))
+  const statsByTeam = new Map(teamStats.map((stats) => [stats.teamName, stats]))
 
   const liveTeams = allTeams.filter((teamName) => !eliminated.has(teamName))
 

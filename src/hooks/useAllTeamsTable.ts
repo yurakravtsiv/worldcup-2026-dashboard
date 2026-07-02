@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useGroups } from '@/hooks/useGroups'
 import { useMatches } from '@/hooks/useMatches'
 import { useRankings } from '@/hooks/useRankings'
-import { computeAllTeamsGroupStats, computeTournamentWinProbability } from '@/lib/team-stats'
+import { computeAllTeamsStats, computeTournamentWinProbability } from '@/lib/team-stats'
 import { getMatchesForStage, type StageId } from '@/lib/tournament-stages'
 import type { AllTeamsTableRow } from '@/types/stats'
 
@@ -30,9 +30,9 @@ export function useAllTeamsTable(stageId: StageId) {
     const matches = matchesQuery.data
     const rankings = rankingsQuery.data
     const stageMatches = getMatchesForStage(stageId, matches)
-    const groupStats = computeAllTeamsGroupStats(stageMatches, allTeams)
+    const teamStats = computeAllTeamsStats(stageMatches, allTeams)
     const probabilities = computeTournamentWinProbability(stageId, matches, rankings, allTeams)
-    const statsByTeam = new Map(groupStats.map((stats) => [stats.teamName, stats]))
+    const statsByTeam = new Map(teamStats.map((stats) => [stats.teamName, stats]))
 
     return probabilities.map((probability) => {
       const stats = statsByTeam.get(probability.teamName) ?? emptyGroupStats
@@ -55,6 +55,10 @@ export function useAllTeamsTable(stageId: StageId) {
   return {
     rows,
     isLoading: groupsQuery.isLoading || matchesQuery.isLoading || rankingsQuery.isLoading,
+    isFetching: groupsQuery.isFetching || matchesQuery.isFetching || rankingsQuery.isFetching,
     isError: groupsQuery.isError || matchesQuery.isError || rankingsQuery.isError,
+    refetch: async () => {
+      await Promise.all([groupsQuery.refetch(), matchesQuery.refetch(), rankingsQuery.refetch()])
+    },
   }
 }
