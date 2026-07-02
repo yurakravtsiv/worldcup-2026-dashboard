@@ -39,3 +39,21 @@ export type CleanSheetsAndBiggestWinsResult = {
   cleanSheets: TeamCleanSheetCount[]
   biggestWins: MatchWithMargin[]
 }
+
+export type TeamGroupStats = {
+  teamName: string
+  played: number
+  won: number
+  drawn: number
+  lost: number
+  goalsFor: number
+  goalsAgainst: number
+  goalDifference: number
+  points: number
+}
+
+export type TeamProbability = {
+  teamName: string
+  winProbability: number
+  isEliminated: boolean
+}
