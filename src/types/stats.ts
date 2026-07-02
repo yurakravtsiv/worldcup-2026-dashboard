@@ -57,3 +57,16 @@ export type TeamProbability = {
   winProbability: number
   isEliminated: boolean
 }
+
+export type AllTeamsTableRow = {
+  teamName: string
+  winProbability: number
+  isEliminated: boolean
+  played: number
+  won: number
+  drawn: number
+  lost: number
+  goalsFor: number
+  goalsAgainst: number
+  goalDifference: number
+}
