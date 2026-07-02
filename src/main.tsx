@@ -4,13 +4,18 @@ import { App } from '@/app/App'
 import { Providers } from '@/app/providers'
 import '@/index.css'
 
+const enableMsw = import.meta.env.VITE_ENABLE_MSW === 'true'
+
 async function enableMocking() {
-  if (!import.meta.env.DEV) {
+  if (!enableMsw) {
     return
   }
 
   const { worker } = await import('@/mocks/browser')
-  await worker.start({ onUnhandledRequest: 'bypass' })
+
+  return worker.start({
+    onUnhandledRequest: 'bypass',
+  })
 }
 
 enableMocking().then(() => {
