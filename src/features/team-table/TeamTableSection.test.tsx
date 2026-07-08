@@ -1,5 +1,6 @@
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { TeamTableSection } from '@/features/team-table/TeamTableSection'
 import type { StageId } from '@/lib/tournament-stages'
 import type { AllTeamsTableRow } from '@/types/stats'
@@ -83,6 +84,15 @@ const mockMatches = [
     ground: 'Stadium',
     score: { ft: [2, 1] as [number, number] },
   },
+  {
+    round: 'Round of 32',
+    date: '2026-06-28',
+    time: '12:00 UTC',
+    team1: 'Argentina',
+    team2: 'France',
+    ground: 'Stadium',
+    score: { ft: [2, 1] as [number, number] },
+  },
 ]
 
 const useAllTeamsTableMock = vi.fn()
@@ -100,6 +110,17 @@ vi.mock('@/hooks/useMatches', () => ({
 vi.mock('@/hooks/useAllTeamsTable', () => ({
   useAllTeamsTable: (stageId: StageId) => useAllTeamsTableMock(stageId),
 }))
+
+function renderTeamTableSection(initialEntry = '/table') {
+  const router = createMemoryRouter([{ path: '/table', element: <TeamTableSection /> }], {
+    initialEntries: [initialEntry],
+    initialIndex: 0,
+  })
+
+  render(<RouterProvider router={router} />)
+
+  return router
+}
 
 function getRenderedTeamNames(): string[] {
   const body = screen.getAllByRole('rowgroup')[1]
@@ -121,7 +142,7 @@ describe('TeamTableSection', () => {
 
   it('keeps eliminated teams at the bottom when sorting by an allowed column', async () => {
     const user = userEvent.setup()
-    render(<TeamTableSection />)
+    renderTeamTableSection()
 
     await user.click(screen.getByRole('button', { name: /^Goals For/i }))
     expect(getRenderedTeamNames()).toEqual(['Zulu', 'Alpha', 'Echo', 'Mike'])
@@ -132,7 +153,7 @@ describe('TeamTableSection', () => {
 
   it('sorts eliminated teams alphabetically regardless of the selected sort column', async () => {
     const user = userEvent.setup()
-    render(<TeamTableSection />)
+    renderTeamTableSection()
 
     await user.click(screen.getByRole('button', { name: /^Team/i }))
     expect(getRenderedTeamNames().slice(2)).toEqual(['Echo', 'Mike'])
@@ -156,7 +177,7 @@ describe('TeamTableSection', () => {
       refetch: vi.fn(),
     }))
 
-    render(<TeamTableSection />)
+    renderTeamTableSection()
 
     await user.click(screen.getByRole('button', { name: /^Cup Win Probability/i }))
     expect(getRenderedTeamNames().slice(0, 2)).toEqual(['Alpha', 'Zulu'])
@@ -164,9 +185,9 @@ describe('TeamTableSection', () => {
 
   it('calls useAllTeamsTable with the newly selected stage id', async () => {
     const user = userEvent.setup()
-    render(<TeamTableSection />)
+    renderTeamTableSection()
 
-    expect(useAllTeamsTableMock).toHaveBeenCalledWith('group-3')
+    expect(useAllTeamsTableMock).toHaveBeenCalledWith('Round of 32')
 
     await user.click(screen.getByRole('combobox', { name: 'Select a stage' }))
     await user.click(screen.getByRole('option', { name: 'Group Stage — Round 1' }))
@@ -177,7 +198,7 @@ describe('TeamTableSection', () => {
   it('filters active and eliminated teams by case-insensitive substring search', async () => {
     const user = userEvent.setup()
 
-    render(<TeamTableSection />)
+    renderTeamTableSection()
 
     await user.type(screen.getByRole('searchbox', { name: 'Search' }), 'alp')
 
@@ -190,6 +211,26 @@ describe('TeamTableSection', () => {
 
     await waitFor(() => {
       expect(getRenderedTeamNames()).toEqual(['Echo'])
+    })
+  })
+
+  it('reads stage and search from URL query params on mount', () => {
+    renderTeamTableSection('/table?stage=Round+of+32&search=alp')
+
+    expect(useAllTeamsTableMock).toHaveBeenCalledWith('Round of 32')
+    expect(screen.getByRole('searchbox', { name: 'Search' })).toHaveValue('alp')
+    expect(getRenderedTeamNames()).toEqual(['Alpha'])
+  })
+
+  it('updates the URL when the stage changes', async () => {
+    const user = userEvent.setup()
+    const router = renderTeamTableSection('/table?stage=group-3')
+
+    await user.click(screen.getByRole('combobox', { name: 'Select a stage' }))
+    await user.click(screen.getByRole('option', { name: 'Group Stage — Round 1' }))
+
+    await waitFor(() => {
+      expect(router.state.location.search).toBe('?stage=group-1')
     })
   })
 })

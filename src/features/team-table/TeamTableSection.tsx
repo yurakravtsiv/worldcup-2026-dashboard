@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { StageSelector } from '@/features/team-table/StageSelector'
@@ -86,33 +87,67 @@ function compareActiveRows(
   return sortDirection === 'asc' ? comparison : -comparison
 }
 
+function isValidStageId(stageId: string, availableStages: { id: StageId; label: string }[]): stageId is StageId {
+  return availableStages.some((stage) => stage.id === stageId)
+}
+
 export function TeamTableSection() {
+  const [searchParams, setSearchParams] = useSearchParams()
   const matchesQuery = useMatches()
   const availableStages = useMemo(
     () => (matchesQuery.data ? getAvailableStages(matchesQuery.data) : []),
     [matchesQuery.data],
   )
 
-  const [userSelectedStageId, setUserSelectedStageId] = useState<StageId | null>(null)
+  const stageParam = searchParams.get('stage')
   const selectedStageId = useMemo(() => {
-    if (
-      userSelectedStageId !== null &&
-      availableStages.some((stage) => stage.id === userSelectedStageId)
-    ) {
-      return userSelectedStageId
+    if (stageParam && isValidStageId(stageParam, availableStages)) {
+      return stageParam
     }
 
     return availableStages.at(-1)?.id ?? 'group-1'
-  }, [availableStages, userSelectedStageId])
-  const [searchQuery, setSearchQuery] = useState('')
+  }, [availableStages, stageParam])
+
+  const searchQuery = searchParams.get('search') ?? ''
   const [sortBy, setSortBy] = useState<TeamTableSortBy>(DEFAULT_SORT_BY)
   const [sortDirection, setSortDirection] = useState<TeamTableSortDirection>(DEFAULT_SORT_DIRECTION)
 
   const { rows, isLoading, isFetching, isError, refetch } = useAllTeamsTable(selectedStageId)
 
-  const handleSearchChange = useCallback((value: string) => {
-    setSearchQuery(value)
-  }, [])
+  const handleStageChange = useCallback(
+    (newStageId: StageId) => {
+      setSearchParams(
+        (previous) => {
+          const next = new URLSearchParams(previous)
+          next.set('stage', newStageId)
+          return next
+        },
+        { replace: true },
+      )
+    },
+    [setSearchParams],
+  )
+
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      setSearchParams(
+        (previous) => {
+          const next = new URLSearchParams(previous)
+          const trimmedValue = value.trim()
+
+          if (trimmedValue) {
+            next.set('search', trimmedValue)
+          } else {
+            next.delete('search')
+          }
+
+          return next
+        },
+        { replace: true },
+      )
+    },
+    [setSearchParams],
+  )
 
   const handleSortChange = useCallback(
     (column: TeamTableSortBy) => {
@@ -168,7 +203,7 @@ export function TeamTableSection() {
         <StageSelector
           stages={availableStages}
           value={selectedStageId}
-          onChange={setUserSelectedStageId}
+          onChange={handleStageChange}
           isLoading={matchesQuery.isLoading}
         />
         <TeamSearchInput value={searchQuery} onChange={handleSearchChange} />

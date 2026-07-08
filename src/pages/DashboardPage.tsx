@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { InsightsSection } from '@/features/insights/InsightsSection'
 import { TeamTableSection } from '@/features/team-table/TeamTableSection'
@@ -20,12 +20,18 @@ const tabs: { value: DashboardTab; label: string; panelId: string; tabId: string
   },
 ]
 
+function getActiveTab(pathname: string): DashboardTab {
+  return pathname.endsWith('/insights') ? 'insights' : 'table'
+}
+
 export function DashboardPage() {
-  const [activeTab, setActiveTab] = useState<DashboardTab>('table')
+  const location = useLocation()
+  const navigate = useNavigate()
+  const activeTab = getActiveTab(location.pathname)
 
   return (
     <div className="space-y-6">
-      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as DashboardTab)}>
+      <Tabs value={activeTab} onValueChange={(value) => navigate(`/${value}`)}>
         <TabsList aria-label="Dashboard sections">
           {tabs.map((tab) => (
             <TabsTrigger key={tab.value} value={tab.value} id={tab.tabId}>
@@ -35,17 +41,13 @@ export function DashboardPage() {
         </TabsList>
       </Tabs>
 
-      {tabs.map((tab) => (
-        <div
-          key={tab.value}
-          role="tabpanel"
-          id={tab.panelId}
-          aria-labelledby={tab.tabId}
-          hidden={activeTab !== tab.value}
-        >
-          {tab.value === 'insights' ? <InsightsSection /> : <TeamTableSection />}
-        </div>
-      ))}
+      <div
+        role="tabpanel"
+        id={tabs.find((tab) => tab.value === activeTab)?.panelId}
+        aria-labelledby={tabs.find((tab) => tab.value === activeTab)?.tabId}
+      >
+        {activeTab === 'insights' ? <InsightsSection /> : <TeamTableSection />}
+      </div>
     </div>
   )
 }
