@@ -9,10 +9,16 @@ import { useTournamentStats } from '@/hooks/useTournamentStats'
 
 function InsightsSkeleton() {
   return (
-    <div className="grid gap-4 lg:grid-cols-2">
-      {Array.from({ length: 6 }).map((_, index) => (
-        <Skeleton key={index} className="h-56 w-full rounded-xl" />
-      ))}
+    <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
+      <div className="flex flex-col gap-6">
+        <Skeleton className="h-56 w-full rounded-xl" />
+        <Skeleton className="h-56 w-full rounded-xl" />
+      </div>
+      <div className="flex flex-col gap-6">
+        <Skeleton className="h-56 w-full rounded-xl" />
+        <Skeleton className="h-56 w-full rounded-xl" />
+      </div>
+      <Skeleton className="h-56 w-full rounded-xl lg:col-span-2" />
     </div>
   )
 }
@@ -73,11 +79,15 @@ export function InsightsSection() {
       {isError ? <InsightsErrorState onRetry={handleRetry} isRetrying={isFetching} /> : null}
 
       {!isLoading && !isError ? (
-        <div className="grid gap-4 lg:grid-cols-2">
-          <UpsetIndexCard upsets={upsets} />
-          <GroupDifficultyList groups={groupDifficulty} />
-          <CleanSheetsTable cleanSheets={cleanSheetsAndWins.cleanSheets} />
-          <BiggestWinsTable biggestWins={cleanSheetsAndWins.biggestWins} />
+        <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
+          <div className="flex flex-col gap-6">
+            <UpsetIndexCard upsets={upsets} />
+            <CleanSheetsTable cleanSheets={cleanSheetsAndWins.cleanSheets} />
+          </div>
+          <div className="flex flex-col gap-6">
+            <GroupDifficultyList groups={groupDifficulty} />
+            <BiggestWinsTable biggestWins={cleanSheetsAndWins.biggestWins} />
+          </div>
           <div className="lg:col-span-2">
             <GoalsTimelineChart timeline={goalsTimeline} />
           </div>

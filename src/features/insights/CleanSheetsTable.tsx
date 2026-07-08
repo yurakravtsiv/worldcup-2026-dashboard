@@ -1,20 +1,13 @@
 import { TeamFlag } from '@/components/team-flag'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
 import type { TeamCleanSheetCount } from '@/types/stats'
 
 type CleanSheetsTableProps = {
   cleanSheets: TeamCleanSheetCount[]
   limit?: number
 }
+
+const DESKTOP_GRID_CLASS = 'grid grid-cols-[2rem_minmax(0,1fr)_7rem] items-center gap-x-2 px-2'
 
 export function CleanSheetsTable({ cleanSheets, limit = 10 }: CleanSheetsTableProps) {
   const rows = cleanSheets.slice(0, limit)
@@ -38,45 +31,43 @@ export function CleanSheetsTable({ cleanSheets, limit = 10 }: CleanSheetsTablePr
                 >
                   <span className="inline-flex min-w-0 items-center gap-2">
                     <span className="text-muted-foreground">{index + 1}.</span>
-                    <span className="inline-flex items-center gap-2 font-medium">
+                    <span className="inline-flex min-w-0 items-center gap-2 font-medium">
                       <TeamFlag teamName={entry.teamName} />
-                      {entry.teamName}
+                      <span className="truncate">{entry.teamName}</span>
                     </span>
                   </span>
-                  <span className="font-semibold tabular-nums">{entry.cleanSheets}</span>
+                  <span className="font-semibold tabular-nums whitespace-nowrap">
+                    {entry.cleanSheets}
+                  </span>
                 </li>
               ))}
             </ul>
 
-            <div className="hidden sm:block">
-              <Table className="min-w-[20rem]">
-                <TableCaption className="sr-only">Clean sheets ranking</TableCaption>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead scope="col" className="w-10">
-                      #
-                    </TableHead>
-                    <TableHead scope="col">Team</TableHead>
-                    <TableHead scope="col" className="text-right">
-                      Clean sheets
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {rows.map((entry, index) => (
-                    <TableRow key={entry.teamName}>
-                      <TableCell className="text-muted-foreground">{index + 1}</TableCell>
-                      <TableCell className="font-medium">
-                        <span className="inline-flex items-center gap-2">
-                          <TeamFlag teamName={entry.teamName} />
-                          {entry.teamName}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-right tabular-nums">{entry.cleanSheets}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+            <div className="hidden min-w-[20rem] text-sm sm:block" aria-label="Clean sheets ranking">
+              <div
+                className={`${DESKTOP_GRID_CLASS} h-10 border-b font-medium text-foreground`}
+                role="row"
+              >
+                <span role="columnheader">#</span>
+                <span role="columnheader">Team</span>
+                <span role="columnheader" className="text-right whitespace-nowrap">
+                  Clean sheets
+                </span>
+              </div>
+              {rows.map((entry, index) => (
+                <div
+                  key={entry.teamName}
+                  className={`${DESKTOP_GRID_CLASS} border-b py-2 transition-colors last:border-b-0 hover:bg-muted/50`}
+                  role="row"
+                >
+                  <span className="text-muted-foreground">{index + 1}</span>
+                  <span className="flex min-w-0 items-center gap-1.5 font-medium">
+                    <TeamFlag teamName={entry.teamName} />
+                    <span className="truncate">{entry.teamName}</span>
+                  </span>
+                  <span className="text-right tabular-nums whitespace-nowrap">{entry.cleanSheets}</span>
+                </div>
+              ))}
             </div>
           </>
         )}

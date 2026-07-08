@@ -2,20 +2,29 @@ import { HoverOrTapPopover } from '@/components/hover-or-tap-popover'
 import { MatchScoreCard } from '@/components/match-score-card'
 import { TeamFlag } from '@/components/team-flag'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
 import type { MatchWithMargin } from '@/types/stats'
 
 type BiggestWinsTableProps = {
   biggestWins: MatchWithMargin[]
   limit?: number
+}
+
+const DESKTOP_GRID_CLASS =
+  'grid grid-cols-[2rem_minmax(0,1fr)_minmax(0,1fr)_4rem] items-center gap-x-2 px-2'
+
+function TeamCell({ teamName, emphasized = false }: { teamName: string; emphasized?: boolean }) {
+  return (
+    <span
+      className={
+        emphasized
+          ? 'flex min-w-0 items-center gap-1.5 font-medium'
+          : 'flex min-w-0 items-center gap-1.5'
+      }
+    >
+      <TeamFlag teamName={teamName} />
+      <span className="truncate">{teamName}</span>
+    </span>
+  )
 }
 
 function BiggestWinRowContent({
@@ -42,7 +51,7 @@ function BiggestWinRowContent({
             {entry.loser}
           </p>
         </div>
-        <span className="shrink-0 font-semibold tabular-nums text-stat-positive">
+        <span className="shrink-0 font-semibold tabular-nums whitespace-nowrap text-stat-positive">
           +{entry.margin}
         </span>
       </div>
@@ -50,18 +59,14 @@ function BiggestWinRowContent({
   }
 
   return (
-    <div className="grid w-full grid-cols-[2.5rem_minmax(0,1fr)_minmax(0,1fr)_4rem] items-center gap-2 text-left">
+    <>
       <span className="text-muted-foreground">{index + 1}</span>
-      <span className="inline-flex min-w-0 items-center gap-2 font-medium">
-        <TeamFlag teamName={entry.winner} />
-        {entry.winner}
+      <TeamCell teamName={entry.winner} emphasized />
+      <TeamCell teamName={entry.loser} />
+      <span className="text-right font-semibold tabular-nums whitespace-nowrap text-stat-positive">
+        +{entry.margin}
       </span>
-      <span className="inline-flex min-w-0 items-center gap-2">
-        <TeamFlag teamName={entry.loser} />
-        {entry.loser}
-      </span>
-      <span className="text-right font-semibold tabular-nums text-stat-positive">+{entry.margin}</span>
-    </div>
+    </>
   )
 }
 
@@ -99,44 +104,38 @@ export function BiggestWinsTable({ biggestWins, limit = 10 }: BiggestWinsTablePr
               ))}
             </ul>
 
-            <div className="hidden md:block">
-              <Table className="min-w-[28rem]">
-                <TableCaption className="sr-only">Biggest wins ranking</TableCaption>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead scope="col" className="w-10">
-                      #
-                    </TableHead>
-                    <TableHead scope="col">Winner</TableHead>
-                    <TableHead scope="col">Loser</TableHead>
-                    <TableHead scope="col" className="text-right">
-                      Margin
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {rows.map((entry, index) => (
-                    <TableRow key={`${entry.match.date}-${entry.winner}-${entry.loser}`}>
-                      <TableCell colSpan={4} className="p-0">
-                        <HoverOrTapPopover
-                          className="w-72 p-3"
-                          trigger={
-                            <span className="block w-full rounded-none px-2 py-2 no-underline hover:bg-muted/50 hover:no-underline">
-                              <BiggestWinRowContent
-                                entry={entry}
-                                index={index}
-                                layout="desktop"
-                              />
-                            </span>
-                          }
-                        >
-                          <MatchScoreCard match={entry.match} />
-                        </HoverOrTapPopover>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+            <div className="hidden md:block min-w-[28rem] text-sm" aria-label="Biggest wins ranking">
+              <div
+                className={`${DESKTOP_GRID_CLASS} h-10 border-b font-medium text-foreground`}
+                role="row"
+              >
+                <span role="columnheader">#</span>
+                <span role="columnheader">Winner</span>
+                <span role="columnheader">Loser</span>
+                <span role="columnheader" className="text-right">
+                  Margin
+                </span>
+              </div>
+              {rows.map((entry, index) => (
+                <div
+                  key={`${entry.match.date}-${entry.winner}-${entry.loser}`}
+                  className="border-b transition-colors last:border-b-0 hover:bg-muted/50 [&_button]:flex [&_button]:w-full [&_button]:min-w-0"
+                  role="row"
+                >
+                  <HoverOrTapPopover
+                    className="w-72 p-3"
+                    trigger={
+                      <span
+                        className={`${DESKTOP_GRID_CLASS} block w-full py-2 no-underline hover:bg-muted/50 hover:no-underline`}
+                      >
+                        <BiggestWinRowContent entry={entry} index={index} layout="desktop" />
+                      </span>
+                    }
+                  >
+                    <MatchScoreCard match={entry.match} />
+                  </HoverOrTapPopover>
+                </div>
+              ))}
             </div>
           </>
         )}

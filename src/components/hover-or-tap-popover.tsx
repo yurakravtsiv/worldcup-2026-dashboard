@@ -73,7 +73,7 @@ export function HoverOrTapPopover({
           aria-expanded={open}
           aria-haspopup="dialog"
           className={cn(
-            'max-w-full cursor-pointer rounded-sm border-0 bg-transparent p-0 text-left text-inherit',
+            'inline-flex max-w-full cursor-pointer items-center rounded-sm border-0 bg-transparent p-0 text-left text-inherit',
             'underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50',
           )}
           onClick={handleTriggerClick}
