@@ -1,6 +1,8 @@
 import { useMemo } from 'react'
+import { HoverOrTapPopover } from '@/components/hover-or-tap-popover'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
+import { GroupDifficultyPopoverContent } from '@/features/insights/GroupDifficultyPopoverContent'
 import type { GroupDifficultyResult } from '@/types/stats'
 
 type GroupDifficultyListProps = {
@@ -31,12 +33,21 @@ export function GroupDifficultyList({ groups }: GroupDifficultyListProps) {
 
               return (
                 <li key={group.groupName} className="space-y-2">
-                  <div className="flex flex-col gap-1 text-sm sm:flex-row sm:items-center sm:justify-between sm:gap-3">
-                    <span className="font-medium">{group.groupName}</span>
-                    <span className="text-muted-foreground tabular-nums">
-                      {group.pointsSpread} pts · GD spread {group.goalDifferenceSpread}
-                    </span>
-                  </div>
+                  <HoverOrTapPopover
+                    className="w-80 p-3"
+                    trigger={
+                      <span className="block w-full no-underline hover:no-underline">
+                        <div className="flex flex-col gap-1 text-sm sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+                          <span className="font-medium">{group.groupName}</span>
+                          <span className="text-muted-foreground tabular-nums">
+                            {group.pointsSpread} pts · GD spread {group.goalDifferenceSpread}
+                          </span>
+                        </div>
+                      </span>
+                    }
+                  >
+                    <GroupDifficultyPopoverContent groupName={group.groupName} />
+                  </HoverOrTapPopover>
                   <Progress
                     value={spreadPercent}
                     aria-label={`${group.groupName}: ${group.pointsSpread} point spread`}
