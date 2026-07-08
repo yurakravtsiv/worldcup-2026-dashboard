@@ -56,17 +56,9 @@ React Query provides:
 
 Using `useEffect` + `fetch` would duplicate this logic in every hook.
 
-### Zustand instead of Context for UI state
+### No global state library
 
-Dashboard filters (`selectedGroupName`, `sortBy`, `sortDirection`) are **client UI state**, not server data.
-
-Zustand was chosen because:
-
-- no unnecessary re-renders of the whole tree via a Provider;
-- simple API with little boilerplate;
-- easy selective subscriptions (`useDashboardFilters(s => s.sortBy)`).
-
-Context fits rarely changing global values (e.g. theme), but adds overhead for frequently updated filters.
+UI state in this app turned out simple enough that it didn't need Zustand or Context: the selected stage and search query live in the URL (`useSearchParams`), sort order is local `useState` scoped to `TeamTableSection`, and theme preference is `localStorage`. Zustand was evaluated early on but adding it would have been unjustified complexity for state that's this localized — it's a reasonable fit to reach for if a future feature needs state shared across unrelated parts of the tree.
 
 ### MSW as a mock backend
 
