@@ -2,10 +2,12 @@ import { HoverOrTapPopover } from '@/components/hover-or-tap-popover'
 import { MatchScoreCard } from '@/components/match-score-card'
 import { TeamFlag } from '@/components/team-flag'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import type { TeamCode } from '@/types/football'
 import type { MatchWithMargin } from '@/types/stats'
 
 type BiggestWinsTableProps = {
   biggestWins: MatchWithMargin[]
+  teamCodes: TeamCode[]
   limit?: number
 }
 
@@ -70,7 +72,7 @@ function BiggestWinRowContent({
   )
 }
 
-export function BiggestWinsTable({ biggestWins, limit = 10 }: BiggestWinsTableProps) {
+export function BiggestWinsTable({ biggestWins, teamCodes, limit = 10 }: BiggestWinsTableProps) {
   const rows = biggestWins.slice(0, limit)
 
   return (
@@ -91,14 +93,13 @@ export function BiggestWinsTable({ biggestWins, limit = 10 }: BiggestWinsTablePr
                   className="rounded-md border border-border px-3 py-2 text-sm"
                 >
                   <HoverOrTapPopover
-                    className="w-72 p-3"
                     trigger={
                       <span className="block w-full no-underline hover:no-underline">
                         <BiggestWinRowContent entry={entry} index={index} layout="mobile" />
                       </span>
                     }
                   >
-                    <MatchScoreCard match={entry.match} />
+                    <MatchScoreCard match={entry.match} codes={teamCodes} />
                   </HoverOrTapPopover>
                 </li>
               ))}
@@ -123,7 +124,6 @@ export function BiggestWinsTable({ biggestWins, limit = 10 }: BiggestWinsTablePr
                   role="row"
                 >
                   <HoverOrTapPopover
-                    className="w-72 p-3"
                     trigger={
                       <span
                         className={`${DESKTOP_GRID_CLASS} block w-full py-2 no-underline hover:bg-muted/50 hover:no-underline`}
@@ -132,7 +132,7 @@ export function BiggestWinsTable({ biggestWins, limit = 10 }: BiggestWinsTablePr
                       </span>
                     }
                   >
-                    <MatchScoreCard match={entry.match} />
+                    <MatchScoreCard match={entry.match} codes={teamCodes} />
                   </HoverOrTapPopover>
                 </div>
               ))}

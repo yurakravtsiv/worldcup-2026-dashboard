@@ -1,12 +1,14 @@
 import { http, HttpResponse } from 'msw'
-import type { Match, TeamRanking, TournamentGroups } from '@/types/football'
+import type { Match, TeamCode, TeamRanking, TournamentGroups } from '@/types/football'
 import groupsFixture from '@/mocks/fixtures/groups.json'
 import matchesFixture from '@/mocks/fixtures/matches.json'
 import rankingsFixture from '@/mocks/fixtures/fifa-rankings.json'
+import teamCodesFixture from '@/mocks/fixtures/team-codes.json'
 
 const groupsData = groupsFixture as TournamentGroups
 const matchesData = matchesFixture as { name: string; matches: Match[] }
 const rankingsData = rankingsFixture as TeamRanking[]
+const teamCodesData = teamCodesFixture as TeamCode[]
 
 function randomDelay(): Promise<void> {
   const ms = 300 + Math.floor(Math.random() * 301)
@@ -42,5 +44,10 @@ export const handlers = [
   http.get('/api/rankings', async () => {
     await randomDelay()
     return HttpResponse.json(rankingsData)
+  }),
+
+  http.get('/api/team-codes', async () => {
+    await randomDelay()
+    return HttpResponse.json(teamCodesData)
   }),
 ]

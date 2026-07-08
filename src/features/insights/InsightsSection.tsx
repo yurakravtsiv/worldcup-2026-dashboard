@@ -5,6 +5,7 @@ import { CleanSheetsTable } from '@/features/insights/CleanSheetsTable'
 import { GoalsTimelineChart } from '@/features/insights/GoalsTimelineChart'
 import { GroupDifficultyList } from '@/features/insights/GroupDifficultyList'
 import { UpsetIndexCard } from '@/features/insights/UpsetIndexCard'
+import { useTeamCodes } from '@/hooks/useTeamCodes'
 import { useTournamentStats } from '@/hooks/useTournamentStats'
 
 function InsightsSkeleton() {
@@ -60,6 +61,8 @@ export function InsightsSection() {
     isError,
     refetch,
   } = useTournamentStats()
+  const teamCodesQuery = useTeamCodes()
+  const teamCodes = teamCodesQuery.data ?? []
 
   const handleRetry = () => {
     void refetch()
@@ -81,12 +84,12 @@ export function InsightsSection() {
       {!isLoading && !isError ? (
         <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
           <div className="flex flex-col gap-6">
-            <UpsetIndexCard upsets={upsets} />
+            <UpsetIndexCard upsets={upsets} teamCodes={teamCodes} />
             <CleanSheetsTable cleanSheets={cleanSheetsAndWins.cleanSheets} />
           </div>
           <div className="flex flex-col gap-6">
             <GroupDifficultyList groups={groupDifficulty} />
-            <BiggestWinsTable biggestWins={cleanSheetsAndWins.biggestWins} />
+            <BiggestWinsTable biggestWins={cleanSheetsAndWins.biggestWins} teamCodes={teamCodes} />
           </div>
           <div className="lg:col-span-2">
             <GoalsTimelineChart timeline={goalsTimeline} />

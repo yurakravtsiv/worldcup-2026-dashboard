@@ -2,13 +2,15 @@ import { HoverOrTapPopover } from '@/components/hover-or-tap-popover'
 import { MatchScoreCard } from '@/components/match-score-card'
 import { TeamFlag } from '@/components/team-flag'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import type { TeamCode } from '@/types/football'
 import type { UpsetResult } from '@/types/stats'
 
 type UpsetIndexCardProps = {
   upsets: UpsetResult[]
+  teamCodes: TeamCode[]
 }
 
-export function UpsetIndexCard({ upsets }: UpsetIndexCardProps) {
+export function UpsetIndexCard({ upsets, teamCodes }: UpsetIndexCardProps) {
   const topUpsets = upsets.slice(0, 5)
 
   return (
@@ -28,7 +30,6 @@ export function UpsetIndexCard({ upsets }: UpsetIndexCardProps) {
                 className="text-sm [&_button]:-mx-2 [&_button]:flex [&_button]:w-full [&_button]:min-w-0 [&_button]:cursor-pointer [&_button]:rounded [&_button]:px-2 [&_button]:py-1.5 [&_button]:hover:bg-muted/50 [&_button]:hover:no-underline"
               >
                 <HoverOrTapPopover
-                  className="w-72 p-3"
                   trigger={
                     <span className="flex w-full flex-wrap items-center gap-x-1.5 gap-y-1">
                       <span className="font-medium text-muted-foreground">{index + 1}.</span>
@@ -46,7 +47,7 @@ export function UpsetIndexCard({ upsets }: UpsetIndexCardProps) {
                     </span>
                   }
                 >
-                  <MatchScoreCard match={upset.match} />
+                  <MatchScoreCard match={upset.match} codes={teamCodes} />
                 </HoverOrTapPopover>
               </li>
             ))}

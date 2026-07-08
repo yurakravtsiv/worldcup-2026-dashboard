@@ -42,6 +42,11 @@ export type TeamRanking = {
   ranking: number
 }
 
+export type TeamCode = {
+  teamName: string
+  fifaCode: string
+}
+
 /** Computed group-table row; not present in raw fixture data. */
 export type Standing = {
   position: number
