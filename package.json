@@ -13,7 +13,8 @@
     "format:check": "prettier --check .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "refresh-fixtures": "tsx scripts/refresh-fixtures.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
@@ -51,6 +52,7 @@
     "jsdom": "^29.1.1",
     "msw": "^2.14.6",
     "prettier": "^3.8.1",
+    "tsx": "^4.23.0",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.56.1",
     "vite": "^7.3.1",

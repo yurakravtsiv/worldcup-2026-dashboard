@@ -76,9 +76,19 @@ Fixtures in `src/mocks/fixtures/` (groups, matches) follow the format and struct
 
 - realistic groups, rounds, scores, and goals;
 - a stable snapshot for demos without a paid API;
-- fixtures can be refreshed from the upstream repo via a script.
+- fixtures can be refreshed from the upstream repo via a script (see below).
 
 `fifa-rankings.json` is a **separate demo file**, not from openfootball (see limitations below).
+
+### Refreshing mock data from the live source
+
+Fixtures in `src/mocks/fixtures/matches.json` are a point-in-time snapshot. To pull a fresher copy from the same upstream source (openfootball/worldcup.json):
+
+```bash
+npm run refresh-fixtures
+```
+
+This overwrites `matches.json` only (groups/rankings/team-codes are stable and don't need refreshing). Review the diff and commit if the data looks right — this is a manual step, not run automatically in CI or at build time, to keep the demo deterministic.
 
 ### Statistics in `lib/`, separate from data fetching
 
