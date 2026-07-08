@@ -158,7 +158,7 @@ describe('TeamTableSection', () => {
 
     render(<TeamTableSection />)
 
-    await user.click(screen.getByRole('button', { name: /^Win Probability/i }))
+    await user.click(screen.getByRole('button', { name: /^Cup Win Probability/i }))
     expect(getRenderedTeamNames().slice(0, 2)).toEqual(['Alpha', 'Zulu'])
   })
 

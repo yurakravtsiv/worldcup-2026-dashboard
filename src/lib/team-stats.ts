@@ -350,9 +350,10 @@ export function computeTournamentWinProbability(
     const upsetBonus = upsetBonusByTeam.get(teamName) ?? 0
     const upsetBonusScore = maxUpsetBonusAmongLive > 0 ? upsetBonus / maxUpsetBonusAmongLive : 0
 
+    // Composite weights: ranking 30%, form 30%, attack 15%, defense 15%, upset bonus 10%.
     const composite =
-      0.35 * rankingScore +
-      0.25 * formScore +
+      0.3 * rankingScore +
+      0.3 * formScore +
       0.15 * attackScore +
       0.15 * defenseScore +
       0.1 * upsetBonusScore

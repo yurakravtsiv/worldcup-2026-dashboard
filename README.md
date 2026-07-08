@@ -107,14 +107,14 @@ Separation of concerns: **fetch/cache** (Query) → **transform** (`lib/`) → *
 | Charts | recharts |
 | Tests | Vitest + Testing Library |
 
-## Win Probability & Tournament Stage Snapshots
+## Cup Win Probability & Tournament Stage Snapshots
 
-### What "Win Probability" actually means
+### What "Cup Win Probability" actually means
 
 It's an **independent heuristic strength score per team (0-100%)**, not a normalized probability distribution. Multiple teams can have high scores simultaneously (e.g. Argentina 85% and France 84% at the same time) — the numbers don't sum to 100 across teams. It's computed as a weighted composite of:
 
-- **FIFA ranking (35%)** — pre-tournament team strength
-- **Current form (25%)** — points per game so far in the tournament
+- **FIFA ranking (30%)** — pre-tournament team strength
+- **Current form (30%)** — points per game so far in the tournament
 - **Attack output (15%)** — goals scored, relative to other teams still in the tournament
 - **Defense output (15%)** — goals conceded, relative to other teams still in the tournament
 - **Upset bonus (10%)** — extra credit for beating higher-ranked opponents
@@ -135,7 +135,7 @@ Two design decisions worth calling out:
 
 ### Known limitations
 
-This is a deliberately simple, explainable heuristic — not a statistical model (no Elo, no Monte Carlo simulation, no historical base rates). The weights (35/25/15/15/10) are a reasonable starting point I could tune with real data, not derived from any formal fitting process.
+This is a deliberately simple, explainable heuristic — not a statistical model (no Elo, no Monte Carlo simulation, no historical base rates). The weights (30/30/15/15/10) are a reasonable starting point I could tune with real data, not derived from any formal fitting process.
 
 ## What I would improve with more time
 

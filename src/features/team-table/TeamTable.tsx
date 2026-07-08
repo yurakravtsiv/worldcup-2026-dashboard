@@ -28,6 +28,7 @@ type TeamTableProps = {
 type SortableColumn = {
   sortBy: TeamTableSortBy
   label: string
+  shortLabel?: string
   hint?: string
   align?: 'left' | 'right'
 }
@@ -44,7 +45,8 @@ const columns: TableColumn[] = [
   {
     kind: 'sortable',
     sortBy: 'winProbability',
-    label: 'Win Probability',
+    label: 'Cup Win Probability',
+    shortLabel: 'Cup Win %',
     hint: 'Heuristic strength score',
     align: 'right',
   },
@@ -121,8 +123,25 @@ function SortableHeader({ column, sortBy, sortDirection, onSortChange }: Sortabl
           column.hint && 'flex-col items-end justify-center gap-0.5 py-1',
         )}
       >
-        <span className="inline-flex items-center gap-1 font-medium text-foreground/80">
-          {column.label}
+        <span
+          className={cn(
+            'inline-flex items-center gap-1 font-medium text-foreground/80',
+            column.shortLabel && 'whitespace-nowrap',
+          )}
+        >
+          {column.shortLabel ? (
+            <>
+              <span aria-hidden="true" className="sm:hidden">
+                {column.shortLabel}
+              </span>
+              <span aria-hidden="true" className="hidden sm:inline">
+                {column.label}
+              </span>
+              <span className="sr-only">{column.label}</span>
+            </>
+          ) : (
+            column.label
+          )}
           {isActive ? (
             sortDirection === 'asc' ? (
               <ArrowUpIcon className="size-3.5" aria-hidden="true" />

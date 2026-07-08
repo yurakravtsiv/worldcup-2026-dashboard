@@ -128,7 +128,7 @@ describe('TeamTable', () => {
     expect(onSortChange).not.toHaveBeenCalled()
   })
 
-  it('sorts by Team and Win Probability in both directions when headers are clicked', async () => {
+  it('sorts by Team and Cup Win Probability in both directions when headers are clicked', async () => {
     const user = userEvent.setup()
 
     render(<InteractiveTeamTable />)
@@ -146,10 +146,10 @@ describe('TeamTable', () => {
     await user.click(screen.getByRole('button', { name: /^Team/i }))
     expect(getBodyTeamNames()).toEqual(['Alpha', 'Echo', 'Mike', 'Zulu'])
 
-    await user.click(screen.getByRole('button', { name: /^Win Probability/i }))
+    await user.click(screen.getByRole('button', { name: /^Cup Win Probability/i }))
     expect(getBodyTeamNames()).toEqual(['Zulu', 'Alpha', 'Mike', 'Echo'])
 
-    await user.click(screen.getByRole('button', { name: /^Win Probability/i }))
+    await user.click(screen.getByRole('button', { name: /^Cup Win Probability/i }))
     expect(getBodyTeamNames()).toEqual(['Mike', 'Echo', 'Alpha', 'Zulu'])
   })
 
