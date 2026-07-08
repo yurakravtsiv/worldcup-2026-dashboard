@@ -70,6 +70,10 @@ In development, MSW intercepts REST requests to `/api/*` and returns JSON from `
 
 MSW is not enabled in production — requests hit the real URL (no backend deployed yet).
 
+### Typed API layer
+
+Response shapes are typed manually in `src/types/` and fetched through the generic `apiClient<T>` helper in `src/lib/api-client.ts`. OpenAPI/NSwag-generated types were intentionally skipped here — with a mocked backend, writing a spec just to generate types from it would mean documenting a contract I invented myself, adding process overhead without real benefit for a project this size.
+
 ### Data source: [openfootball/worldcup.json](https://github.com/openfootball/worldcup.json)
 
 Fixtures in `src/mocks/fixtures/` (groups, matches) follow the format and structure of **openfootball/worldcup.json** — open tournament data. It is a practical source for a prototype:
