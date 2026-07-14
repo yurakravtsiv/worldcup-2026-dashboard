@@ -104,6 +104,8 @@ Functions like `computeStandings`, `computeUpsetIndex`, and `computeGroupDifficu
 
 Separation of concerns: **fetch/cache** (Query) → **transform** (`lib/`) → **view** (components).
 
+A top-level ErrorBoundary catches unexpected render errors app-wide, with additional narrower boundaries around the two dashboard sections so a failure in one (e.g. Insights) doesn't take down the other.
+
 ### Stack overview
 
 | Layer | Tooling |

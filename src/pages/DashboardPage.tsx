@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom'
+import { ErrorBoundary, SectionErrorFallback } from '@/components/error-boundary'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { InsightsSection } from '@/features/insights/InsightsSection'
 import { TeamTableSection } from '@/features/team-table/TeamTableSection'
@@ -46,7 +47,31 @@ export function DashboardPage() {
         id={tabs.find((tab) => tab.value === activeTab)?.panelId}
         aria-labelledby={tabs.find((tab) => tab.value === activeTab)?.tabId}
       >
-        {activeTab === 'insights' ? <InsightsSection /> : <TeamTableSection />}
+        {activeTab === 'insights' ? (
+          <ErrorBoundary
+            fallback={(error, reset) => (
+              <SectionErrorFallback
+                title="Something went wrong loading tournament insights"
+                error={error}
+                reset={reset}
+              />
+            )}
+          >
+            <InsightsSection />
+          </ErrorBoundary>
+        ) : (
+          <ErrorBoundary
+            fallback={(error, reset) => (
+              <SectionErrorFallback
+                title="Something went wrong loading the rankings table"
+                error={error}
+                reset={reset}
+              />
+            )}
+          >
+            <TeamTableSection />
+          </ErrorBoundary>
+        )}
       </div>
     </div>
   )
