@@ -43,7 +43,10 @@ export function CleanSheetsTable({ cleanSheets, limit = 10 }: CleanSheetsTablePr
               ))}
             </ul>
 
-            <div className="hidden min-w-[20rem] text-sm sm:block" aria-label="Clean sheets ranking">
+            <div
+              className="hidden min-w-[20rem] text-sm sm:block"
+              aria-label="Clean sheets ranking"
+            >
               <div
                 className={`${DESKTOP_GRID_CLASS} h-10 border-b font-medium text-foreground`}
                 role="row"
@@ -65,7 +68,9 @@ export function CleanSheetsTable({ cleanSheets, limit = 10 }: CleanSheetsTablePr
                     <TeamFlag teamName={entry.teamName} />
                     <span className="truncate">{entry.teamName}</span>
                   </span>
-                  <span className="text-right tabular-nums whitespace-nowrap">{entry.cleanSheets}</span>
+                  <span className="text-right tabular-nums whitespace-nowrap">
+                    {entry.cleanSheets}
+                  </span>
                 </div>
               ))}
             </div>

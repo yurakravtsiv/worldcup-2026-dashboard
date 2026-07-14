@@ -1,5 +1,7 @@
 # WC 2026 Dashboard
 
+![CI](https://github.com/yurakravtsiv/worldcup-2026-dashboard/actions/workflows/ci.yml/badge.svg)
+
 Interactive dashboard for the 2026 World Cup group stage and tournament statistics.  
 Built with React + TypeScript, a mock REST API via MSW, and computed analytics on top of fixture data.
 

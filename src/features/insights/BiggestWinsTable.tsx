@@ -105,7 +105,10 @@ export function BiggestWinsTable({ biggestWins, teamCodes, limit = 10 }: Biggest
               ))}
             </ul>
 
-            <div className="hidden md:block min-w-[28rem] text-sm" aria-label="Biggest wins ranking">
+            <div
+              className="hidden md:block min-w-[28rem] text-sm"
+              aria-label="Biggest wins ranking"
+            >
               <div
                 className={`${DESKTOP_GRID_CLASS} h-10 border-b font-medium text-foreground`}
                 role="row"

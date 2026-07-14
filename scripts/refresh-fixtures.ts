@@ -1,7 +1,8 @@
 import { writeFileSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
-const SOURCE_URL = 'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json'
+const SOURCE_URL =
+  'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json'
 const OUTPUT_PATH = resolve(process.cwd(), 'src/mocks/fixtures/matches.json')
 
 type RawMatch = {
@@ -10,7 +11,12 @@ type RawMatch = {
   time?: string
   team1: string
   team2: string
-  score?: { ft: [number, number]; ht?: [number, number]; et?: [number, number]; p?: [number, number] }
+  score?: {
+    ft: [number, number]
+    ht?: [number, number]
+    et?: [number, number]
+    p?: [number, number]
+  }
   goals1?: { name: string; minute: string }[]
   goals2?: { name: string; minute: string }[]
   group?: string
@@ -31,8 +37,15 @@ function validateShape(data: unknown): asserts data is RawWorldCupData {
     throw new Error('Fetched data has no "matches" array — upstream format may have changed.')
   }
   const first = candidate.matches[0]
-  if (!first || typeof first.team1 !== 'string' || typeof first.team2 !== 'string' || typeof first.round !== 'string') {
-    throw new Error('Match objects are missing expected fields (team1/team2/round) — upstream format may have changed.')
+  if (
+    !first ||
+    typeof first.team1 !== 'string' ||
+    typeof first.team2 !== 'string' ||
+    typeof first.round !== 'string'
+  ) {
+    throw new Error(
+      'Match objects are missing expected fields (team1/team2/round) — upstream format may have changed.',
+    )
   }
 }
 

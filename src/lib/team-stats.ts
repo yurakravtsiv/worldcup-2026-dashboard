@@ -88,9 +88,10 @@ function getMatchWinner(match: Match): MatchOutcome | null {
   return null
 }
 
-function getTeamResults(
-  match: Match & { score: MatchScore },
-): { team1: 'won' | 'drawn' | 'lost'; team2: 'won' | 'drawn' | 'lost' } {
+function getTeamResults(match: Match & { score: MatchScore }): {
+  team1: 'won' | 'drawn' | 'lost'
+  team2: 'won' | 'drawn' | 'lost'
+} {
   const outcome = getMatchWinner(match)
 
   if (!outcome) {

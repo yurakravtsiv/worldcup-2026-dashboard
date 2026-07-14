@@ -87,7 +87,10 @@ function compareActiveRows(
   return sortDirection === 'asc' ? comparison : -comparison
 }
 
-function isValidStageId(stageId: string, availableStages: { id: StageId; label: string }[]): stageId is StageId {
+function isValidStageId(
+  stageId: string,
+  availableStages: { id: StageId; label: string }[],
+): stageId is StageId {
   return availableStages.some((stage) => stage.id === stageId)
 }
 

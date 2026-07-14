@@ -1,7 +1,11 @@
 import { useMemo, useState } from 'react'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { TeamTable, type TeamTableSortBy, type TeamTableSortDirection } from '@/features/team-table/TeamTable'
+import {
+  TeamTable,
+  type TeamTableSortBy,
+  type TeamTableSortDirection,
+} from '@/features/team-table/TeamTable'
 import type { AllTeamsTableRow } from '@/types/stats'
 
 const sampleRows: AllTeamsTableRow[] = [

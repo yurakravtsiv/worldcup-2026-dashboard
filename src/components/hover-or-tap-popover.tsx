@@ -12,11 +12,7 @@ type HoverOrTapPopoverProps = {
   className?: string
 }
 
-export function HoverOrTapPopover({
-  trigger,
-  children,
-  className,
-}: HoverOrTapPopoverProps) {
+export function HoverOrTapPopover({ trigger, children, className }: HoverOrTapPopoverProps) {
   const canHover = useHoverCapability()
   const [open, setOpen] = useState(false)
   const openTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)

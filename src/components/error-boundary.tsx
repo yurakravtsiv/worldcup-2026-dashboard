@@ -50,9 +50,7 @@ export function SectionErrorFallback({
   error,
   reset,
 }: ErrorFallbackProps) {
-  return (
-    <DefaultErrorFallback title={title} error={error} reset={reset} compact />
-  )
+  return <DefaultErrorFallback title={title} error={error} reset={reset} compact />
 }
 
 function DefaultErrorFallback({

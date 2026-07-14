@@ -361,12 +361,7 @@ describe('computeTournamentWinProbability', () => {
       },
     ]
 
-    const probabilities = computeTournamentWinProbability(
-      'group-3',
-      matches,
-      topRankings,
-      topTeams,
-    )
+    const probabilities = computeTournamentWinProbability('group-3', matches, topRankings, topTeams)
     const favorite = probabilities.find((entry) => entry.teamName === 'Favorite')
     const secondFavorite = probabilities.find((entry) => entry.teamName === 'SecondFavorite')
     const total = (favorite?.winProbability ?? 0) + (secondFavorite?.winProbability ?? 0)

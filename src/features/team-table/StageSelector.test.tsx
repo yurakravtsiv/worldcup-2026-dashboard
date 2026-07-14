@@ -45,13 +45,7 @@ const availableStages = getAvailableStages(mockMatches)
 
 describe('StageSelector', () => {
   it('shows the selected stage label instead of the raw stage id', () => {
-    render(
-      <StageSelector
-        stages={availableStages}
-        value="group-3"
-        onChange={vi.fn()}
-      />,
-    )
+    render(<StageSelector stages={availableStages} value="group-3" onChange={vi.fn()} />)
 
     expect(screen.getByRole('combobox', { name: 'Select a stage' })).toHaveTextContent(
       'Group Stage — Round 3',
@@ -64,13 +58,7 @@ describe('StageSelector', () => {
   it('lists exactly the stages returned by getAvailableStages', async () => {
     const user = userEvent.setup()
 
-    render(
-      <StageSelector
-        stages={availableStages}
-        value="group-3"
-        onChange={vi.fn()}
-      />,
-    )
+    render(<StageSelector stages={availableStages} value="group-3" onChange={vi.fn()} />)
 
     await user.click(screen.getByRole('combobox', { name: 'Select a stage' }))
 
@@ -86,13 +74,7 @@ describe('StageSelector', () => {
     const user = userEvent.setup()
     const onChange = vi.fn()
 
-    render(
-      <StageSelector
-        stages={availableStages}
-        value="group-3"
-        onChange={onChange}
-      />,
-    )
+    render(<StageSelector stages={availableStages} value="group-3" onChange={onChange} />)
 
     await user.click(screen.getByRole('combobox', { name: 'Select a stage' }))
     await user.click(screen.getByRole('option', { name: 'Group Stage — Round 1' }))

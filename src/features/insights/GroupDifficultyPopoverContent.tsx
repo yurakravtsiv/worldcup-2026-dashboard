@@ -74,7 +74,9 @@ export function GroupDifficultyPopoverContent({ groupName }: GroupDifficultyPopo
               <TableCell className="text-right tabular-nums">{standing.won}</TableCell>
               <TableCell className="text-right tabular-nums">{standing.drawn}</TableCell>
               <TableCell className="text-right tabular-nums">{standing.lost}</TableCell>
-              <TableCell className="text-right font-medium tabular-nums">{standing.points}</TableCell>
+              <TableCell className="text-right font-medium tabular-nums">
+                {standing.points}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
