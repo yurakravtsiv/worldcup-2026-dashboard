@@ -79,6 +79,16 @@ export function HoverOrTapPopover({
           onClick={handleTriggerClick}
           onMouseEnter={canHover ? scheduleOpen : undefined}
           onMouseLeave={canHover ? scheduleClose : undefined}
+          onFocus={() => {
+            if (canHover) {
+              scheduleOpen()
+            }
+          }}
+          onBlur={() => {
+            if (canHover) {
+              scheduleClose()
+            }
+          }}
         >
           {trigger}
         </button>
