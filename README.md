@@ -108,6 +108,8 @@ Separation of concerns: **fetch/cache** (Query) → **transform** (`lib/`) → *
 
 A top-level ErrorBoundary catches unexpected render errors app-wide, with additional narrower boundaries around the two dashboard sections so a failure in one (e.g. Insights) doesn't take down the other.
 
+The Insights tab (and its recharts dependency) is code-split via React.lazy — it's not loaded until the user navigates there, keeping the initial bundle for Power Rankings smaller.
+
 ### Stack overview
 
 | Layer | Tooling |
@@ -154,7 +156,6 @@ This is a deliberately simple, explainable heuristic — not a statistical model
 - **Storybook** — isolated development of tables, insight cards, and loading/error states.
 - **E2E (Playwright)** — flows such as group selection → standings, tab switching, and error retry.
 - **Virtualization** (`@tanstack/react-virtual`) — long match lists and timelines without jank on low-end devices.
-- **Code splitting** — lazy routes to shrink the initial bundle (recharts + dashboard).
 
 ## Known limitations
 

@@ -1,8 +1,15 @@
+import { lazy, Suspense } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { ErrorBoundary, SectionErrorFallback } from '@/components/error-boundary'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { InsightsSection } from '@/features/insights/InsightsSection'
+import { InsightsSkeleton } from '@/features/insights/InsightsSkeleton'
 import { TeamTableSection } from '@/features/team-table/TeamTableSection'
+
+const InsightsSection = lazy(() =>
+  import('@/features/insights/InsightsSection').then((module) => ({
+    default: module.InsightsSection,
+  })),
+)
 
 type DashboardTab = 'table' | 'insights'
 
@@ -57,7 +64,9 @@ export function DashboardPage() {
               />
             )}
           >
-            <InsightsSection />
+            <Suspense fallback={<InsightsSkeleton />}>
+              <InsightsSection />
+            </Suspense>
           </ErrorBoundary>
         ) : (
           <ErrorBoundary

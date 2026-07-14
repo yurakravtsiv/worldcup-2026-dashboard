@@ -1,28 +1,12 @@
 import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
 import { BiggestWinsTable } from '@/features/insights/BiggestWinsTable'
 import { CleanSheetsTable } from '@/features/insights/CleanSheetsTable'
 import { GoalsTimelineChart } from '@/features/insights/GoalsTimelineChart'
 import { GroupDifficultyList } from '@/features/insights/GroupDifficultyList'
+import { InsightsSkeleton } from '@/features/insights/InsightsSkeleton'
 import { UpsetIndexCard } from '@/features/insights/UpsetIndexCard'
 import { useTeamCodes } from '@/hooks/useTeamCodes'
 import { useTournamentStats } from '@/hooks/useTournamentStats'
-
-function InsightsSkeleton() {
-  return (
-    <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
-      <div className="flex flex-col gap-6">
-        <Skeleton className="h-56 w-full rounded-xl" />
-        <Skeleton className="h-56 w-full rounded-xl" />
-      </div>
-      <div className="flex flex-col gap-6">
-        <Skeleton className="h-56 w-full rounded-xl" />
-        <Skeleton className="h-56 w-full rounded-xl" />
-      </div>
-      <Skeleton className="h-56 w-full rounded-xl lg:col-span-2" />
-    </div>
-  )
-}
 
 type InsightsErrorStateProps = {
   onRetry: () => void
