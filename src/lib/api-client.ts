@@ -17,7 +17,7 @@ async function parseErrorMessage(response: Response): Promise<string> {
       return body.message
     }
   } catch {
-    // Response body is not JSON.
+    return `Unexpected non-JSON response (status ${response.status}) — check if the API mock is running.`
   }
 
   return response.statusText || 'Request failed'

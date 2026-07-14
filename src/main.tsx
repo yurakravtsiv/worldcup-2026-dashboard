@@ -8,6 +8,9 @@ const enableMsw = import.meta.env.VITE_ENABLE_MSW === 'true'
 
 async function enableMocking() {
   if (!enableMsw) {
+    console.warn(
+      'MSW mocking is disabled (VITE_ENABLE_MSW is not "true") — API calls will hit the real network.',
+    )
     return
   }
 
